@@ -1,2 +1,2 @@
 # MCP-Detection
-MCP Crypto Misuse Detection
+MCP Detection
