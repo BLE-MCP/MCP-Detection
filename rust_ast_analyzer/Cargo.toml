@@ -1,0 +1,20 @@
+[package]
+name = "rust_ast_analyzer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+quote = "1.0.40"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+syn = { version = "2.0.104", features = ["full", "visit"] }
+walkdir = "2.5.0"
+indexmap = { version = "2", features = ["serde"] }
+
+proc-macro2 = { version = "1.0", features = ["span-locations"] }
+
+lazy_static    = "1"
+serde_yaml     = "0.9"
+
+umya-spreadsheet = "2.3"
+pathdiff = "0.2"
