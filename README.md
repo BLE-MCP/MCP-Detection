@@ -124,7 +124,7 @@ python crypto_misuse_detection.py ./mcp_detection_results --excel ./results/cryp
              |
              v
 +----------------------------+
-| crypto_identification.py   |       
+| crypto_identification.py   | 
 +----------------------------+
              |
              v
@@ -135,7 +135,7 @@ python crypto_misuse_detection.py ./mcp_detection_results --excel ./results/cryp
              |
              v
 +----------------------------+
-| crypto_misuse_detection.py |                     
+| crypto_misuse_detection.py |              
 +----------------------------+
              |
              v
