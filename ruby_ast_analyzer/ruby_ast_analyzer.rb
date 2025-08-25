@@ -83,7 +83,7 @@ def expr_to_s(node)
 
   case node.type
   when :const, :lvar, :ivar, :cvar, :gvar
-    node.children[1] || node.children[0] # const 有两级
+    node.children[1] || node.children[0]
   when :sym
     ":#{node.children[0]}"
   when :str
@@ -324,3 +324,4 @@ Dir.children(projects_root)
 end
 
 puts "🎉 All projects have been processed."
+
