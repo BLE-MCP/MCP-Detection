@@ -767,7 +767,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                 return v_
         return None
 
-    # —— MD5/SHA1
     hash_issues = _detect_hash_usage(all_calls, taint_engine=taint_engine, taint_strict=False, graph=graph, extra_edges=extra_edges)
     first_md5 = next((i for i in hash_issues if i["hash_type"] == "md5"), None)
     first_sha1 = next((i for i in hash_issues if i["hash_type"] == "sha1"), None)
@@ -776,7 +775,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
         api = (call.get("api") or "").lower()
         args = (call.get("arguments", {}) or {})
 
-        # ---- Rule 6/7 ----
         if (not rule6_hit) and first_md5:
             violations.append("Rule 6: " + first_md5["rule_violation"])
             evidence_keys.append("md5")
