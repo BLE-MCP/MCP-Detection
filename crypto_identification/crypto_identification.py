@@ -7,7 +7,6 @@ import chardet
 import json, re, gzip, chardet
 
 def _strip_json_comments(s: str) -> str:
-    # 删除 // 和 /* */ 注释，保留字符串里的内容
     out = []
     i, n = 0, len(s)
     in_str = False
@@ -29,12 +28,12 @@ def _strip_json_comments(s: str) -> str:
             out.append(ch); i += 1; continue
         if ch == '/' and i + 1 < n:
             nxt = s[i+1]
-            if nxt == '/':        # 行注释
+            if nxt == '/':        
                 i += 2
                 while i < n and s[i] != '\n':
                     i += 1
                 continue
-            if nxt == '*':        # 块注释
+            if nxt == '*': 
                 i += 2
                 while i + 1 < n and not (s[i] == '*' and s[i+1] == '/'):
                     i += 1
@@ -56,7 +55,6 @@ def _try_json_lines(text: str):
     return objs if objs else None
 
 def read_json_with_encoding_fallback(file_path):
-    # 读原始字节 & 解 gzip（有些 .json 实际被压缩了）
     with open(file_path, 'rb') as fb:
         raw = fb.read()
     if raw[:2] == b'\x1f\x8b':
@@ -65,7 +63,6 @@ def read_json_with_encoding_fallback(file_path):
         except Exception:
             pass
 
-    # 先试常见编码
     for enc in ('utf-8', 'utf-8-sig', None):
         try:
             if enc:
@@ -77,30 +74,26 @@ def read_json_with_encoding_fallback(file_path):
         except Exception:
             continue
 
-    # 统一清理
     text = text.replace('\ufeff', '').replace('\x00', '')
 
-    # 1) 严格 JSON
     try:
         return json.loads(text)
     except json.JSONDecodeError:
         pass
 
-    # 2) JSON Lines（NDJSON）
     jl = _try_json_lines(text)
     if jl is not None:
         return jl
 
-    # 3) json5（可选）
     try:
         import json5
         return json5.loads(text)
     except Exception:
         pass
 
-    # 4) 去注释/去尾逗号再试
+
     cleaned = _strip_json_comments(text)
-    cleaned = re.sub(r',\s*([}\]])', r'\1', cleaned)  # 去尾逗号
+    cleaned = re.sub(r',\s*([}\]])', r'\1', cleaned)  
     try:
         return json.loads(cleaned)
     except Exception:
