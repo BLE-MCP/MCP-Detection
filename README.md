@@ -117,7 +117,7 @@ Run each analyzer inside its directory. Example:
 ### 2. Crypto Identification
 
 ```bash
-python crypto_identification.py "./mcp_detection_results" --output "./results/crypto_check_result.xlsx""
+python crypto_identification.py "./mcp_detection_results" --output "./results/crypto_check_result.xlsx"
 ```
 
 ---
