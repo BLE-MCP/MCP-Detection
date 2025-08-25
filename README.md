@@ -32,6 +32,7 @@ This tool supports AST analysis for **C#, Go, Java, JavaScript, PHP, Python, Rub
   - Misuse rules triggered  
   - Evidence keywords / matched strings  
   - Potential risky dependency paths  
+  - ......
 
 ---
 
