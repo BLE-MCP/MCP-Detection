@@ -330,7 +330,7 @@ func main() {
     let excelPath = argv.count >= 3 ? argv[2] : "D:\\mcp_detection_results-v2\\run_times.xlsx"
 
     let fm = FileManager.default
-    guard fm.fileExists(atPath: rootDir) else { print("输入目录不存在：\(rootDir)"); return }
+    guard fm.fileExists(atPath: rootDir) else { print("The directory does not exist：\(rootDir)"); return }
 
 
     let projects = collectProjects(root: rootDir)
