@@ -82,7 +82,7 @@ Run each analyzer inside its directory. Take JavaScript as an example:
   
   ```bash
   cd js_ast_analyzer
-  node JS_IR_php.js "../mcp_source_code/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
+  node js_ast_analyzer.js "../mcp_source_code/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
   ```
 
 ---
