@@ -148,7 +148,7 @@ namespace CSharpAstExtractor
             string excelPath = Path.Combine(outputDir, "run_times.xlsx");
             WriteExcel(perProjectTimes, milestoneTimes, excelPath);
 
-            Console.WriteLine($"\n🧾 已写入 Excel：{excelPath}");
+            Console.WriteLine($"\n🧾 Write Excel：{excelPath}");
         }
 
         static void PrintProgress(int done, int total, Stopwatch overall)
@@ -411,3 +411,4 @@ namespace CSharpAstExtractor
         }
     }
 }
+
