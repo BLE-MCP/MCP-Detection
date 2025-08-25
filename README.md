@@ -83,49 +83,49 @@ Run each analyzer inside its directory. Example:
   ```bash
   cd swift_ast_analyzer
   swift build
-  .build/debug/swift_ast_analyzer.exe "../mcp_source_code/Swift" "../mcp_detection_results/Swift/cursor"
+  .build/debug/swift_ast_analyzer.exe "../mcp_source_code/mcpmarket/Swift" "../mcp_detection_results/Swift/mcpmarket"
   ```
 
 - **Go**
   
   ```bash
   cd go_ast_analyzer
-  go run go_ast_analyzer.go "../mcp_source_code/Go" "../mcp_detection_results/Go/mcpmarket"
+  go run go_ast_analyzer.go "../mcp_source_code/mcpmarket/Go" "../mcp_detection_results/Go/mcpmarket"
   ```
 
 - **PHP (with XAMPP)**
   
   ```bash
   cd php_ast_analyzer
-  php ast.php "../mcp_source_code/PHP" "../mcp_detection_results/PHP/mcpmarket"
+  php ast.php "../mcp_source_code/mcpmarket/PHP" "../mcp_detection_results/PHP/mcpmarket"
   ```
 
 - **Rust**
   
   ```bash
   cd rust_ast_analyzer
-  cargo run -- "../mcp_source_code/Rust" "../mcp_detection_results/Rust/pulse"
+  cargo run -- "../mcp_source_code/mcpmarket/Rust" "../mcp_detection_results/Rust/mcpmarket"
   ```
 
 - **JavaScript**
   
   ```bash
   cd js_ast_analyzer
-  node JS_IR_php.js "../mcp_source_code/JavaScript" "../mcp_detection_results/Javascript/smithery"
+  node JS_IR_php.js "../mcp_source_code/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
   ```
 
 - **Python**
   
   ```bash
   cd python_ast_analyzer
-  python Python_IR_cli-php.py "../mcp_source_code/Python" "../mcp_detection_results/Python/smithery-php"
+  python Python_IR_cli-php.py "../mcp_source_code/mcpmarket/Python" "../mcp_detection_results/Python/mcpmarket"
   ```
 
 - **Ruby**
   
   ```bash
   cd ruby_ast_analyzer
-  ruby ruby_ir.rb "../mcp_source_code/Ruby" "../mcp_detection_results/Ruby/pulse"
+  ruby ruby_ir.rb "../mcp_source_code/mcpmarket/Ruby" "../mcp_detection_results/Ruby/mcpmarket"
   ```
 
 - **C# (with Visual Studio / dotnet)**
@@ -133,7 +133,7 @@ Run each analyzer inside its directory. Example:
   ```bash
   cd csharp_ast_analyzer
   dotnet build
-  dotnet run -- "../mcp_source_code/C#" "../mcp_detection_results/C#/smithery"
+  dotnet run -- "../mcp_source_code/mcpmarket/C#" "../mcp_detection_results/C#/mcpmarket"
   ```
 
 - **Java**
@@ -142,7 +142,7 @@ Run each analyzer inside its directory. Example:
   cd java_ast_analyzer
   mvn clean compile
   mvn dependency:resolve
-  mvn exec:java -Dexec.mainClass=org.example.Main -Dexec.args="../mcp_source_code/Java ../mcp_detection_results/Java/cursor"
+  mvn exec:java -Dexec.mainClass=org.example.Main -Dexec.args="../mcp_source_code/mcpmarket/Java ../mcp_detection_results/Java/mcpmarket"
   ```
 
 ---
@@ -158,52 +158,51 @@ python crypto_identification.py ./mcp_detection_results --output ./results/crypt
 ### 3. Cryptographic Misuse Detection
 
 ```bash
-python crypto_misuse_detection.py ./mcp_detection_results --excel ./results/encryption_check_result.xlsx --output ./results/crypto_misuse_result.xlsx
+python crypto_misuse_detection.py ./mcp_detection_results --excel ./results/crypto_check_result.xlsx --output ./results/crypto_misuse_result.xlsx
 ```
 
 ---
 
-## 🔄 Workflow (ASCII Diagram)
+## 🔄 Workflow (Diagram)
 
 ```
-+-------------------------+
-| Multi-language source   |
-| code (C#/Go/Java/...)   |
-+-------------------------+
++----------------------------+
+|    Multi-language source   |
+|    code (C#/Go/Java/...)   |
++----------------------------+
              |
              v
-+-------------------------+
-| AST Analyzers           |
-| (per language)          |
-+-------------------------+
++----------------------------+
+|       AST Analyzers        |
+|       (per language)       |
++----------------------------+
              |
              v
-+-------------------------+
-| Unified JSON IR         |
-+-------------------------+
++----------------------------+
+|       Unified JSON IR      |
++----------------------------+
              |
              v
-+--------------------------+
-| crypto_identification.py |       
-+--------------------------+
++----------------------------+
+| crypto_identification.py   |       
++----------------------------+
              |
              v
-+-------------------------+
-| Excel: crypto_check_    |
-result.xlsx               |
-+-------------------------+
++----------------------------+
+| Excel: crypto_check_result |
+| .xlsx                      |
++----------------------------+
              |
              v
-+-------------------------+
-| crypto_misuse_detection |
-| .py                     |
-+-------------------------+
++----------------------------+
+| crypto_misuse_detection.py |                     
++----------------------------+
              |
              v
-+-------------------------+
-| Excel: crypto_misuse_   |
-| result.xlsx (Final)     |
-+-------------------------+
++---------------------------+
+|   Excel: crypto_misuse_   |
+|   result.xlsx             |
++---------------------------+
 ```
 
 ---
