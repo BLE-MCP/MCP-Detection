@@ -184,7 +184,7 @@ python crypto_misuse_detection.py ./mcp_detection_results --excel ./results/encr
              |
              v
 +--------------------------+
-| crypto_identification.py |       |
+| crypto_identification.py |       
 +--------------------------+
              |
              v
