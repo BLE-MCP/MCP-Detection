@@ -46,7 +46,7 @@ CBC_IV_POSITION_HINTS = {
     "evp_encryptinit_ex": 4, "evp_decryptinit_ex": 4, "aes.new": 2,
 }
 
-# ====== API Key name/value pattern ======
+
 API_KEY_NAME_HINTS = {
     "api_key","apikey","api-key","apikeyid","apikey","x-api-key","x_api_key",
     "authorization","auth","token","access_token","bearer",
@@ -133,7 +133,6 @@ def _check_hardcoded_api_key_in_args(args: dict) -> Tuple[bool, str]:
                             return True, f"{k_}.{hk}='{_redact(show)}'"
     return False, ""
 
-# ========================= Taint Analysis =========================
 TAINT_SOURCE_APIS = {
     "input", "raw_input", "sys.argv", "argparse.parse_args", "os.getenv",
     "flask.request.args.get", "flask.request.form.get", "request.getparameter",
@@ -342,7 +341,6 @@ def is_weak_sha_reference(token, field, full_text):
         )
     )
 
-# ========================= Data Flow Diagram =========================
 try:
     import networkx as nx
 except Exception:
@@ -445,7 +443,6 @@ def _leaks_to_sensitive_sink(call, graph) -> bool:
         return False
     return False
 
-# ========================= MD5 / SHA1 rules (using graph) =========================
 HASH_APIS = {
     "md5": [
         "hashlib.md5", "md5.new", "md5.sum", "md5.create", "digest::md5", "cc_md5",
@@ -638,7 +635,7 @@ def find_encryption_in_json(json_data):
     is_encryption = signal_count >= 2
     return is_encryption, list(hits["keywords"]), list(hits["matched_strings"]), hits["has_strong_encryption"]
 
-# ========================= CBC/IV =========================
+
 def _args_text(args) -> str:
     vals = []
     for a in (args or {}).values():
@@ -724,7 +721,6 @@ def _extract_cbc_iv_info(api: str, args, taint):
     iv_info, iv_ev, _, _ = _extract_cbc_iv_info_with_arg(api, args, taint)
     return iv_info, iv_ev
 
-# ========================= Rule Detection =========================
 def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=None, extra_edges=None):
     violations = []
     evidence_keys = []
@@ -799,7 +795,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
             evidence_matches.append(evm)
             rule7_hit = True
 
-        # ---- Rule 1: ECB ----
         if not rule1_hit and any(k in api for k in ["cipher","aes","des","encrypt","pydes","modes","algorithm"]):
             for k_, v_ in args.items():
                 key_str = str(k_).lower()
@@ -815,7 +810,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                     rule1_hit = True
                     break
 
-        # ---- Rule 2: CBC + constant IV ----
         if not rule2_hit and ("cbc" in (api + " " + _args_text(args)).lower()):
             iv_info, iv_ev = _extract_cbc_iv_info(api, args, taint_engine)
             if iv_info is not None and iv_info.is_constant:
@@ -828,7 +822,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                     evidence_matches.append(str(iv_ev))
                 rule2_hit = True
 
-        # ---- Rule 3: Hard code key ----
         if not rule3_hit:
             for sig in KEY_USAGE_PATTERNS:
                 if sig["api"] in api:
@@ -850,7 +843,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                             rule3_hit = True
                     break
 
-        # ---- Rule 3: Hard code LLM API Key ----
         if not rule3_hit:
             hit, ev = _check_hardcoded_api_key_in_args(args)
             if hit:
@@ -863,7 +855,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                     evidence_matches.append(ev)
                 rule3_hit = True
 
-        # ---- Rule 4/5: PBKDF2（salt/iteration)----
         for sig, spec in PBKDF2_APIS.items():
             if sig in api:
                 if not rule4_hit:
@@ -905,7 +896,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                             pass
                 break
 
-        # ---- Rule 8: Fixed random seed ----
         if not rule8_hit and any(seed in api for seed in {"random.seed","np.random.seed","torch.manual_seed"}):
             arg_list = list(args.items())
             if arg_list:
@@ -929,7 +919,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
         if any(mac in api for mac in MAC_APIS):
             has_mac_function = True
 
-        # ---- Rule 10: DES ----
         if not rule10_hit:
             if ("cipher.getinstance" in api) or ("openssl_encrypt" in api):
                 key_tok, match_tok = _extract_des_evidence(api, args)
@@ -966,7 +955,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
                             evidence_matches.append(match_tok)
                         rule10_hit = True
 
-    # ---- Rule 9：Encryption but no MAC----
     is_enc, enc_keywords, enc_matches, has_strong_enc = find_encryption_in_json({
         "files": [{"calls": all_calls}]
     })
@@ -974,7 +962,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
         violations.append("Rule 9: Encryption without MAC detected")
         evidence_keys.append(",".join(enc_keywords) if enc_keywords else "encryption_detected")
         evidence_matches.append(";".join(enc_matches) if enc_matches else "")
-        # 路径化增强：是否存在加密相关调用的产物泄漏
         leaked_enc = False
         for c in all_calls:
             api_c = (c.get("api") or "").lower()
@@ -989,7 +976,6 @@ def detect_crypto_rules(all_calls, taint_engine: TaintEngine, json_data, graph=N
 
     return violations, evidence_keys, evidence_matches
 
-# ========================= Flow extract =========================
 ARROW = " → "
 
 def json_path_for(fi, ci, arg=None):
@@ -1156,7 +1142,6 @@ def _get_arg_key_by_pos(args, pos: int):
         return str(items[pos][0])
     return None
 
-# ========================= Phase-P / Dependency Pair → Potential Edge =========================
 DATA_ARG_HINTS_WIDE = set(DATA_ARG_HINTS) | {
     "body","json","blob","file","files","stream","bytes","binary",
     "document","record","row","content","payload","message","text","value","input"
@@ -1333,7 +1318,6 @@ def _produced_var_index(json_data) -> Dict[Tuple[int,int], str]:
     return mp
 
 def build_latent_edges(json_data, relationship_pairs: List[Dict[str,str]]):
-    """把 paths 对转换为潜在边；返回 (global_edges, per_file_edges_map)"""
     prod = _produced_var_index(json_data)
     global_edges: List[Tuple[str,str]] = []
     per_file_edges: Dict[int, List[Tuple[str,str]]] = defaultdict(list)
@@ -1352,7 +1336,6 @@ def build_latent_edges(json_data, relationship_pairs: List[Dict[str,str]]):
         v2 = prod.get((fi2,ci2))
         if not v1 or not v2 or v1 == v2:
             continue
-        # 方向：时间序（文件序 + 调用序）从早到晚
         if (fi1,ci1) <= (fi2,ci2):
             src, dst = v1, v2
             ffi = fi1 if fi1 == fi2 else -1
