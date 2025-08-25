@@ -43,7 +43,7 @@ mcp_crypto_misuse_detection/
 
 ### 1. Run AST Analyzers
 
-Run each analyzer inside its directory. Take JavaScript as an example:
+Run each analyzer inside its directory. Example:
 
 - **JavaScript**
   
@@ -52,12 +52,72 @@ Run each analyzer inside its directory. Take JavaScript as an example:
   node js_ast_analyzer.js "../mcp_source_code/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
   ```
 
+- **Python**
+  
+  ```bash
+  cd python_ast_analyzer
+  python python_ast_analyzer.py "../mcp_source_code/mcpmarket/Python" "../mcp_detection_results/Python/mcpmarket"
+  ```
+
+- **Go**
+  
+  ```bash
+  cd go_ast_analyzer
+  go run go_ast_analyzer.go "../mcp_source_code/mcpmarket/Go" "../mcp_detection_results/Go/mcpmarket" 
+  ```
+
+- **PHP**
+  
+  ```bash
+  cd php_ast_analyzer
+  php php_ast_analyzer.php "../mcp_source_code/mcpmarket/PHP" "../mcp_detection_results/PHP/mcpmarket"
+  ```
+
+- **Rust**
+  
+  ```bash
+  cd rust_ast_analyzer
+  cargo run -- "../mcp_source_code/mcpmarket/Rust" "../mcp_detection_results/Rust/mcpmarket"
+  ```
+
+- **Java**
+  
+  ```bash
+  cd java_ast_analyzer
+  mvn clean compile
+  mvn dependency:resolve
+  mvn exec:java -Dexec.mainClass=org.example.Main -Dexec.args="../mcp_source_code/mcpmarket/Java ../mcp_detection_results/Java/mcpmarket"
+  ```
+
+- **C#**
+  
+  ```bash
+  cd csharp_ast_analyzer
+  dotnet build
+  dotnet run -- "../mcp_source_code/mcpmarket/C#" "../mcp_detection_results/C#/mcpmarket"
+  ```
+
+- **Ruby**
+  
+  ```bash
+  cd ruby_ast_analyzer
+  ruby ruby_ir.rb "../mcp_source_code/mcpmarket/Ruby" "../mcp_detection_results/Ruby/mcpmarket"
+  ```
+
+- **Swift**
+  
+  ```bash
+  cd swift_ast_analyzer
+  swift build
+  .build/debug/swift_ast_analyzer.exe "../mcp_source_code/mcpmarket/Swift" "../mcp_detection_results/Swift/mcpmarket"
+  ```
+
 ---
 
 ### 2. Crypto Identification
 
 ```bash
-python crypto_identification.py ./mcp_detection_results --output ./results/crypto_check_result.xlsx
+python crypto_identification.py "./mcp_detection_results" --output "./results/crypto_check_result.xlsx""
 ```
 
 ---
@@ -65,7 +125,7 @@ python crypto_identification.py ./mcp_detection_results --output ./results/crypt
 ### 3. Cryptographic Misuse Detection
 
 ```bash
-python crypto_misuse_detection.py ./mcp_detection_results --excel ./results/crypto_check_result.xlsx --output ./results/crypto_misuse_result.xlsx
+python crypto_misuse_detection.py "./mcp_detection_results" --excel "./results/crypto_check_result.xlsx" --output "./results/crypto_misuse_result.xlsx"
 ```
 
 ---
