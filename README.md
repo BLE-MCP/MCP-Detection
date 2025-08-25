@@ -1,4 +1,4 @@
-# MCP Crypto Misuse Detection
+# MCP Cryptographic Misuse Detection
 
 A cross-language **cryptographic misuse detection tool** designed for [Model Context Protocol (MCP)] servers.  
 This tool supports AST analysis for **C#, Go, Java, JavaScript, PHP, Python, Ruby, Rust, and Swift**, and performs cryptographic misuse detection on a unified IR (Intermediate Representation).
@@ -93,7 +93,7 @@ Run each analyzer inside its directory. Example:
   go run go_ast_analyzer.go "../mcp_source_code/mcpmarket/Go" "../mcp_detection_results/Go/mcpmarket"
   ```
 
-- **PHP (with XAMPP)**
+- **PHP**
   
   ```bash
   cd php_ast_analyzer
@@ -128,7 +128,7 @@ Run each analyzer inside its directory. Example:
   ruby ruby_ir.rb "../mcp_source_code/mcpmarket/Ruby" "../mcp_detection_results/Ruby/mcpmarket"
   ```
 
-- **C# (with Visual Studio / dotnet)**
+- **C#**
   
   ```bash
   cd csharp_ast_analyzer
