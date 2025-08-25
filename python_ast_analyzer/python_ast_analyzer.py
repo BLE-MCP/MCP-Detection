@@ -6,7 +6,6 @@ import argparse
 
 LANGUAGE = "python"
 
-# 弱耦合 API 白名单
 IO_WRITE_APIS = {
     "open().write", "pathlib.Path.write_text", "pathlib.Path.write_bytes",
     "file.write", "json.dump", "yaml.dump", "pickle.dump", "csv.writer.writerow"
@@ -35,7 +34,7 @@ def get_literal_value(node):
         return {"type": "bytes", "base64": base64.b64encode(val).decode("ascii")}
     if isinstance(val, str):
         return f'"{val}"'
-    if isinstance(val, complex):  # ← 新增
+    if isinstance(val, complex): 
         return str(val)
     return val
 
@@ -238,3 +237,4 @@ if __name__=="__main__":
     print(f"🗂️ Scanning: {args.projects_dir}")
     process_all_projects(args.projects_dir,args.output_dir)
     print("🎉 All projects processed!")
+
