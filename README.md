@@ -78,35 +78,6 @@ mcp_crypto_misuse_detection/
 
 Run each analyzer inside its directory. Example:
 
-- **Swift**
-  
-  ```bash
-  cd swift_ast_analyzer
-  swift build
-  .build/debug/swift_ast_analyzer.exe "../mcp_source_code/mcpmarket/Swift" "../mcp_detection_results/Swift/mcpmarket"
-  ```
-
-- **Go**
-  
-  ```bash
-  cd go_ast_analyzer
-  go run go_ast_analyzer.go "../mcp_source_code/mcpmarket/Go" "../mcp_detection_results/Go/mcpmarket"
-  ```
-
-- **PHP**
-  
-  ```bash
-  cd php_ast_analyzer
-  php ast.php "../mcp_source_code/mcpmarket/PHP" "../mcp_detection_results/PHP/mcpmarket"
-  ```
-
-- **Rust**
-  
-  ```bash
-  cd rust_ast_analyzer
-  cargo run -- "../mcp_source_code/mcpmarket/Rust" "../mcp_detection_results/Rust/mcpmarket"
-  ```
-
 - **JavaScript**
   
   ```bash
@@ -114,40 +85,9 @@ Run each analyzer inside its directory. Example:
   node JS_IR_php.js "../mcp_source_code/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
   ```
 
-- **Python**
-  
-  ```bash
-  cd python_ast_analyzer
-  python Python_IR_cli-php.py "../mcp_source_code/mcpmarket/Python" "../mcp_detection_results/Python/mcpmarket"
-  ```
-
-- **Ruby**
-  
-  ```bash
-  cd ruby_ast_analyzer
-  ruby ruby_ir.rb "../mcp_source_code/mcpmarket/Ruby" "../mcp_detection_results/Ruby/mcpmarket"
-  ```
-
-- **C#**
-  
-  ```bash
-  cd csharp_ast_analyzer
-  dotnet build
-  dotnet run -- "../mcp_source_code/mcpmarket/C#" "../mcp_detection_results/C#/mcpmarket"
-  ```
-
-- **Java**
-  
-  ```bash
-  cd java_ast_analyzer
-  mvn clean compile
-  mvn dependency:resolve
-  mvn exec:java -Dexec.mainClass=org.example.Main -Dexec.args="../mcp_source_code/mcpmarket/Java ../mcp_detection_results/Java/mcpmarket"
-  ```
-
 ---
 
-### 2. Initial Crypto Check
+### 2. Initial Crypto Identification
 
 ```bash
 python crypto_identification.py ./mcp_detection_results --output ./results/crypto_check_result.xlsx
