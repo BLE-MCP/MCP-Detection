@@ -76,7 +76,7 @@ mcp_crypto_misuse_detection/
 
 ### 1. Run AST Analyzers
 
-Run each analyzer inside its directory. Example:
+Run each analyzer inside its directory. Take JavaScript as an example:
 
 - **JavaScript**
   
