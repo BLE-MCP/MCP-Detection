@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "references": [
+    {
+      "path": "../logger",
+    },
+    {
+      "path": "../common",
+    },
+    {
+      "path": "../sdk"
+    },
+    {
+      "path": "../autopilot"
+    }
+  ],
+  "exclude": ["node_modules", "dist", "test"]
+}

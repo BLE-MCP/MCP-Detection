@@ -1,0 +1,28 @@
+<script src="https://unpkg.com/@fonoster/sdk"></script>
+<script>
+  const url = "http://localhost:8449";
+  const accessKeyId = "WO00000000000000000000000000000000";
+  const username = "admin@fonoster.local";
+  const password = "changeme";
+
+  const client = new SDK.WebClient({ url, accessKeyId });
+
+  async function main() {
+    try {
+      await client.login(username, password);
+      const domains = new SDK.Applications(client);
+      const response = await domains.createApplication({
+        name: "MyApp",
+        type: "EXTERNAL",
+        endpoint: "localhost:3000"
+      });
+      console.log(response);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  main().catch(console.error);
+</script>
+
+<pre>Check the console for the response!</pre>

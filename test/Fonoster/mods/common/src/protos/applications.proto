@@ -1,0 +1,199 @@
+/*
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
+ *
+ * This file is part of Fonoster
+ *
+ * Licensed under the MIT License (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    https://opensource.org/licenses/MIT
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+package fonoster.applications.v1beta2;
+
+import "google/protobuf/struct.proto";
+
+// Applications service definition
+service Applications {
+  // Create a new application
+  rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {}
+  // Get an application
+  rpc GetApplication(GetApplicationRequest) returns (Application) {}
+  // List applications
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {}
+  // Update an application
+  rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {}
+  // Delete an application
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {}
+  // Evaluate the intellgence for an Autopilot application
+  rpc EvaluateIntelligence(EvaluateIntelligenceRequest) returns (EvaluateIntelligenceResponse);
+}
+
+// The type of application
+enum ApplicationType {
+  // Programmable Voice
+  EXTERNAL = 0;
+  // Internal LLM based applications
+  AUTOPILOT = 1;
+}
+
+message ProductContainer {
+  // Product reference
+  string product_ref = 1;
+  // Product configuration
+  google.protobuf.Struct config = 2;
+  // Product credentials
+  google.protobuf.Struct credentials = 3;
+}
+
+// Application definition
+message Application {
+  // Reference to the application
+  string ref = 1;
+  // The application's resource name
+  string name = 2;
+  // Application type
+  ApplicationType type = 3;
+  // Endpoint for programmable voice
+  string endpoint = 4;
+  // Text to speech product
+  ProductContainer text_to_speech = 5;
+  // Speech to text product
+  ProductContainer speech_to_text = 6;
+  // Intelligence product
+  ProductContainer intelligence = 7;
+  // Creation time
+  int32 created_at = 8;
+  // Update time
+  int32 updated_at = 9;
+}
+
+// Request to create a new application
+message CreateApplicationRequest {
+  // Name of the application
+  string name = 1;
+  // Application type
+  ApplicationType type = 2;
+  // App URL for programmable voice
+  string endpoint = 3;
+  // Text to speech product
+  ProductContainer text_to_speech = 4;
+  // Speech to text product
+  ProductContainer speech_to_text = 5;
+  // Inference engine
+  ProductContainer intelligence = 6;
+}
+
+// Response for create application
+message CreateApplicationResponse {
+  // Echo the reference of the application
+  string ref = 1;
+}
+
+// Request to get an application
+message GetApplicationRequest {
+  // The reference to the application
+  string ref = 1;
+}
+
+// Request to list applications
+message ListApplicationsRequest {
+  // The number of items to list
+  int32 page_size = 1;
+  // The page token
+  string page_token = 2;
+}
+
+// Response for list applications
+message ListApplicationsResponse {
+  // List of applications
+  repeated Application items = 1;
+  // The page token
+  string next_page_token = 2;
+}
+
+// Request to update an application
+message UpdateApplicationRequest {
+  // Reference to the application
+  string ref = 1;
+  // Name of the application
+  string name = 2;
+  // Application type
+  ApplicationType type = 3;
+  // App URL for programmable voice
+  string endpoint = 4;
+  // Text to speech product
+  ProductContainer text_to_speech = 5;
+  // Speech to text product
+  ProductContainer speech_to_text = 6;
+  // Intelligence product
+  ProductContainer intelligence = 7;
+}
+
+// Response for update application
+message UpdateApplicationResponse {
+  // Echo the reference of the application
+  string ref = 1;
+}
+
+// Request to delete an application
+message DeleteApplicationRequest {
+  // The reference to the application
+  string ref = 1;
+}
+
+// Response for delete application
+message DeleteApplicationResponse {
+  // Echo the reference of the application
+  string ref = 1;
+}
+
+// Request to perform an eval for a given Autopilot application
+message EvaluateIntelligenceRequest {
+  // The intelligence to evaluate
+  ProductContainer intelligence = 1;
+}
+
+// Response with the evaluation results
+message EvaluateIntelligenceResponse {
+  enum ExpectedTextType {
+    EXACT = 0;
+    SIMILAR = 1;
+  }
+
+  message ToolEvaluationReport {
+    string expected_tool = 1;
+    string actual_tool = 2;
+    bool passed = 3;
+    google.protobuf.Struct expected_parameters = 4;
+    google.protobuf.Struct actual_parameters = 5;
+    string error_message = 6;
+  }
+
+  message StepEvaluationReport {
+    string human_input = 1;
+    string expected_response = 2;
+    string ai_response = 3;
+    ExpectedTextType evaluation_type = 4;
+    bool passed = 5;
+    string error_message = 6;
+    repeated ToolEvaluationReport tool_evaluations = 7;
+  }
+
+  message ScenarioEvaluationReport {
+    string scenario_ref = 1;
+    bool overall_passed = 2;
+    repeated StepEvaluationReport steps = 3;
+  }
+
+  repeated ScenarioEvaluationReport results = 1;
+}

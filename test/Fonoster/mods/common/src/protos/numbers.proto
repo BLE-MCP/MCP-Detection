@@ -1,0 +1,156 @@
+/*
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
+ *
+ * This file is part of Fonoster
+ *
+ * Licensed under the MIT License (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    https://opensource.org/licenses/MIT
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+package fonoster.numbers.v1beta2;
+
+// The Numbers service definition
+service Numbers {
+  // Create a new Number
+  rpc CreateNumber (CreateNumberRequest) returns (CreateNumberResponse) {}
+  // Update an existing Number
+  rpc UpdateNumber (UpdateNumberRequest) returns (UpdateNumberResponse) {}
+  // Get an existing Number
+  rpc GetNumber (GetNumberRequest) returns (Number) {}
+  // Delete an existing Number
+  rpc DeleteNumber (DeleteNumberRequest) returns (DeleteNumberResponse) {}
+  // List Numbers
+  rpc ListNumbers (ListNumbersRequest) returns (ListNumbersResponse) {}
+}
+
+// The message for the Number resource
+message Number {
+  message Trunk {
+    // The unique identifier of the Trunk
+    string ref = 1;
+    // The name of the Trunk
+    string name = 2;
+  }
+  // The unique identifier of the Number
+  string ref = 1;
+  // The name of the Number
+  string name = 2;
+  // The tel_url of the Number
+  string tel_url = 3;
+  // The city of the Number
+  string city = 4;
+  // The country of the Number
+  string country = 5;
+  // The country_iso_code of the Number
+  string country_iso_code = 6;
+  // The date when the Number was created
+  int32 created_at = 7;
+  // The date when the Number was last updated
+  int32 updated_at = 8;
+  // The trunk this number is associated with
+  Trunk trunk = 9;
+  // This dictates how the number will handle incoming calls
+  oneof ingress_handler {
+    // The call will be forwarded to this agent
+    string agent_aor = 10;
+    // The call will be forward to this application
+    string app_ref = 11;
+  }
+}
+
+// The request message for Numbers.CreateNumber
+message CreateNumberRequest {
+  // The name of the Number
+  string name = 1;
+  // The tel_url of the Number
+  string tel_url = 2;
+  // The city of the Number
+  string city = 3;
+  // The country of the Number
+  string country = 4;
+  // The country_iso_code of the Number
+  string country_iso_code = 5;
+  // Reference to the trunk this number is associated with
+  string trunk_ref = 6;
+  // This dictates how the number will handle incoming calls
+  oneof ingress_handler {
+    // The call will be forwarded to this agent
+    string agent_aor = 7;
+    // The call will be forward to this application
+    string app_ref = 8;
+  }
+}
+
+// The response message for Numbers.CreateNumber
+message CreateNumberResponse {
+  // The reference of the Number
+  string ref = 1;
+}
+
+// The request message for Numbers.UpdateNumber
+message UpdateNumberRequest {
+  // The unique identifier of the Number
+  string ref = 1;
+  // The name of the Number
+  string name = 2;
+  // Reference to the trunk this number is associated with
+  string trunk_ref = 3;
+  // This dictates how the number will handle incoming calls
+  oneof ingress_handler {
+    // The call will be forwarded to this agent
+    string agent_aor = 4;
+    // The call will be forward to this application
+    string app_ref = 5;
+  }
+}
+
+// The response message for Numbers.UpdateNumber
+message UpdateNumberResponse {
+  // The reference of the Number
+  string ref = 1;
+}
+
+// The request message for Numbers.GetNumber
+message GetNumberRequest {
+  // The unique identifier of the Number
+  string ref = 1;
+}
+
+// The request message for Numbers.DeleteNumber
+message DeleteNumberRequest {
+  // The unique identifier of the Number
+  string ref = 1;
+}
+
+// The response message for Numbers.DeleteNumber
+message DeleteNumberResponse {
+  // The reference of the Number
+  string ref = 1;
+}
+
+// The request message for Numbers.ListNumbers
+message ListNumbersRequest {
+  // The maximum number of items in the list
+  int32 page_size = 1;
+  // The next_page_token value returned from the previous request, if any
+  string page_token = 2;
+}
+
+// The response message for Numbers.ListNumbers
+message ListNumbersResponse {
+  // List of Numbers
+  repeated Number items = 1;
+  // Token to retrieve the next page of results, or empty if there are no more results in the list
+  string next_page_token = 2;
+}

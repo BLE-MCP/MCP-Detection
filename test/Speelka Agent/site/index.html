@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Speelka Agent - Universal LLM agent based on the Model Context Protocol (MCP)">
+    <meta name="keywords" content="Speelka Agent, MCP, LLM, AI, Model Context Protocol, Go, Tool Orchestration">
+    <meta name="author" content="Stanislav Korchagin">
+    <title>Speelka Agent - MCP Server for LLM Integration</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://speelka.korchasa.dev/">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Speelka Agent - MCP Server for LLM Integration">
+    <meta property="og:description" content="Universal LLM agent based on the Model Context Protocol (MCP). Optimize context size and orchestrate LLM interactions with other tools.">
+    <meta property="og:image" content="https://speelka.korchasa.dev/img/image.png">
+    <meta property="og:url" content="https://speelka.korchasa.dev/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Speelka Agent">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Speelka Agent - MCP Server for LLM Integration">
+    <meta name="twitter:description" content="Universal LLM agent based on the Model Context Protocol (MCP). Optimize context size and orchestrate LLM interactions.">
+    <meta name="twitter:image" content="https://speelka.korchasa.dev/img/image.png">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js" defer></script>
+    <!-- Mermaid.js for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js" defer></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Speelka Agent",
+      "description": "Universal LLM agent based on the Model Context Protocol (MCP)",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cross-platform",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "url": "https://speelka.korchasa.dev/",
+      "sameAs": [
+        "https://github.com/korchasa/speelka-agent"
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Stanislav Korchagin"
+      }
+    }
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/scripts.js" defer></script>
+
+</head>
+<body>
+    <!-- Header -->
+    <header id="header" role="banner">
+        <nav class="container" aria-label="Main navigation">
+            <div class="logo">
+                <a href="#" aria-label="Speelka Agent home">Speelka Agent</a>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#features" aria-label="Go to Features section">Features</a></li>
+                <li><a href="#architecture" aria-label="Go to Architecture section">Architecture</a></li>
+                <li><a href="#usage" aria-label="Go to Usage section">Usage</a></li>
+                <li><a href="#documentation" aria-label="Go to Documentation section">Docs</a></li>
+                <li><a href="https://github.com/korchasa/speelka-agent" class="btn-github" aria-label="View on GitHub"><i class="fab fa-github" aria-hidden="true"></i> GitHub</a></li>
+            </ul>
+            <div class="hamburger" aria-label="Toggle menu" role="button" tabindex="0" aria-expanded="false" aria-controls="nav-links">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="container" role="region" aria-labelledby="hero-heading">
+        <div class="hero-content">
+            <h1 id="hero-heading">Speelka Agent</h1>
+            <h2>Universal LLM agent based on the Model Context Protocol (MCP)</h2>
+            <p>Universal LLM agent based on the Model Context Protocol (MCP), with the ability to utilize tools from other MCP servers.</p>
+            <div class="hero-buttons" role="group" aria-label="Get started options">
+                <a href="#usage" class="btn btn-primary" aria-label="Go to Usage section">Get Started</a>
+                <a href="https://github.com/korchasa/speelka-agent" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github" aria-hidden="true"></i> View on GitHub</a>
+            </div>
+        </div>
+        <div class="hero-image" aria-hidden="true">
+            <img src="img/image.png" alt="Speelka Agent architecture diagram showing the flow between MCP Client, Speelka Agent, LLM Service and External Tools" width="500" height="400" loading="eager">
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases">
+        <div class="container">
+            <h2 class="section-title">Use Cases</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-filter"></i></div>
+                    <h3>Improving Accuracy</h3>
+                    <p>Splitting large, complex instructions into specialized, focused tasks to improve response accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <h3>Cost Reduction</h3>
+                    <p>Using different models to handle different parts of a task, reducing overall operational costs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
+                    <h3>Response Customization</h3>
+                    <p>Extending, narrowing down, or modifying the structure of third-party MCP server responses.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-random"></i></div>
+                    <h3>Implementation Switching</h3>
+                    <p>Easily switch between real and LLM-based implementations of a given tool.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Capability Constraints</h3>
+                    <p>Restrict the list of available tools in an MCP server to constrain system capabilities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+                    <h3>Workflow Orchestration</h3>
+                    <p>Orchestrate multi-step workflows across multiple MCP tools within a single agent session.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                    <h3>Budget Enforcement</h3>
+                    <p>Enforce per-request token and cost budgets to ensure predictable usage.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-redo-alt"></i></div>
+                    <h3>Automatic Retry</h3>
+                    <p>Automatic retry and exponential backoff handling for transient LLM or MCP server errors.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-exchange-alt"></i></div>
+                    <h3>Provider Switching</h3>
+                    <p>Seamlessly switch between different LLM services (e.g., OpenAI, Anthropic) with unified configuration.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture">
+        <div class="container">
+            <h2 class="section-title">Architecture</h2>
+
+            <div class="architecture-flow">
+                <div class="mermaid-container">
+                    <pre class="mermaid">
+%%{
+  init: {
+    'theme': 'dark',
+    'themeVariables': {
+      'primaryColor': '#8a5cf6',
+      'primaryTextColor': '#f9fafb',
+      'primaryBorderColor': '#8a5cf6',
+      'lineColor': '#8a5cf6',
+      'secondaryColor': '#6d28d9',
+      'tertiaryColor': '#131525',
+      'edgeLabelBackground': '#131525'
+    }
+  }
+}%%
+flowchart TB
+    User["Any MCP Client"] --> |"1. Request"| Agent["Speelka Agent"]
+    Agent --> |"2. Format prompt"| LLM["LLM Service"]
+    LLM --> |"3. Tool calls"| Agent
+    Agent --> |"4. Execute tools"| Tools["External MCP Tools"]
+    Tools --> |"5. Return results"| Agent
+    Agent --> |"6. Process repeat"| LLM
+    Agent --> |"7. Final answer"| User
+
+    classDef default fill:#131525,stroke:#8a5cf6,stroke-width:2px,color:#f9fafb;
+                    </pre>
+                </div>
+                <div class="flow-description">
+                    <ol class="flow-list">
+                        <li><span>User request is received by the Agent</span></li>
+                        <li><span>Agent processes the request and initializes a Chat session</span></li>
+                        <li><span>LLM Service is called with the formatted prompt and available tools</span></li>
+                        <li><span>LLM responds with text and/or tool calls</span></li>
+                        <li><span>For each tool call, MCP Connector executes the tool on an appropriate server</span></li>
+                        <li><span>Tool results are added to the Chat history</span></li>
+                        <li><span>The process repeats until LLM issues an "answer" command</span></li>
+                        <li><span>Final response is returned to the user through Agent</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Section (formerly Configuration) -->
+    <section id="usage">
+        <div class="container">
+            <h2 class="section-title">Usage Guide</h2>
+            <p class="section-subtitle">Follow this simple step-by-step guide to set up your agent</p>
+
+            <div class="usage-steps">
+                <div class="step-container">
+                    <div class="step-number">1</div>
+                    <h3>Create Your API Key</h3>
+                    <p>For security and better management, it's recommended to create a dedicated API key for your LLM provider:</p>
+                    <div class="important-note">
+                        <h4><i class="fas fa-exclamation-circle"></i> Important Security Note</h4>
+                        <p>Create a new API key from your LLM provider and set it as an environment variable:</p>
+                        <pre class="code-block small-code"><button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i></button><code>export SPL_LLM_API_KEY=your_llm_api_key_here</code></pre>
+                        <p>You can get an API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI's website</a> or your preferred LLM provider.</p>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-number">2</div>
+                    <h3>Create Your Configuration File</h3>
+                    <p>First, decide what type of agent you want to create based on your needs:</p>
+
+                    <div class="agent-selection">
+                        <div class="tabs-navigation">
+                            <button class="tab-btn active" data-tab="minimal">Minimal Assistant</button>
+                            <button class="tab-btn" data-tab="ai-news">AI News Agent</button>
+                            <button class="tab-btn" data-tab="architect">Architecture Advisor</button>
+                        </div>
+
+                        <p>Create a file named <code>config.yaml</code> with the following content, depending on your chosen agent:</p>
+
+                        <div class="configuration-templates">
+                            <div class="tab-content active" id="minimal-tab-config">
+                                <pre class="yaml-code"><button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i></button><code><!-- Content will be loaded from site/examples/minimal.yaml --></code></pre>
+                            </div>
+
+                            <div class="tab-content" id="ai-news-tab-config">
+                                <pre class="yaml-code"><button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i></button><code><!-- Content will be loaded from site/examples/ai-news.yaml --></code></pre>
+                            </div>
+
+                            <div class="tab-content" id="architect-tab-config">
+                                <pre class="yaml-code"><button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i></button><code><!-- Content will be loaded from site/examples/architect.yaml --></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-number">3</div>
+                    <h3>Set up your MCP Client</h3>
+                    <p>To interact with your Speelka Agent, you'll need an MCP-compatible client. </p>
+
+                    <div class="important-note">
+                        <h4>Claude Desktop</h4>
+                        <p>Check out the <a href="https://modelcontextprotocol.io/quickstart/user" target="_blank">Claude Desktop setup guide</a> for installation instructions.</p>
+                        <p>Configure Claude Desktop to use your Speelka Agent by editing the <code>claude_desktop_config.json</code> file:</p>
+
+                        <pre class="code-block"><button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i></button><code>{
+  "mcpServers": {
+    "speelka": {
+      "command": "./speelka-agent",
+      "args": ["--config", "config.yaml"],
+      "env": {
+        "SPL_LLM_API_KEY": "your_llm_api_key_here"
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="mcp-client-setup">
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation">
+        <div class="container">
+            <h2 class="section-title">Documentation</h2>
+            <p class="section-subtitle">Complete documentation is available on GitHub</p>
+
+            <div class="github-link-container">
+                <a href="https://github.com/korchasa/speelka-agent#readme" class="btn btn-github">
+                    <i class="fab fa-github"></i> View Documentation on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Speelka Agent</h3>
+                    <p>Universal LLM agent based on the Model Context Protocol (MCP), with the ability to utilize tools from other MCP servers.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#architecture">Architecture</a></li>
+                        <li><a href="#usage">Usage</a></li>
+                        <li><a href="#documentation">Documentation</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-github">
+                    <h3>GitHub</h3>
+                    <ul>
+                        <li><a href="https://github.com/korchasa/speelka-agent">Repository</a></li>
+                        <li><a href="https://github.com/korchasa/speelka-agent/issues">Issues</a></li>
+                        <li><a href="https://github.com/korchasa/speelka-agent/pulls">Pull Requests</a></li>
+                        <li><a href="https://github.com/korchasa/speelka-agent/blob/main/LICENSE">License</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2023 Speelka Agent. Licensed under <a href="https://github.com/korchasa/speelka-agent/blob/main/LICENSE">MIT License</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load the external scripts.js file -->
+    <script src="js/scripts.js"></script>
+</body>
+</html>

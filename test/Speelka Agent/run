@@ -1,0 +1,280 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Colors for better readability
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to load environment variables from .env file
+function load_env() {
+    if [ -f .env ]; then
+        export $(grep -v '^#' .env | xargs)
+    fi
+}
+
+# Function to check if required command exists
+function check_command() {
+    if ! command -v $1 &> /dev/null; then
+        echo -e "${RED}Error: Required command '$1' is not installed.${NC}"
+        exit 1
+    fi
+}
+
+function help() {
+    echo -e "${BLUE}Usage:${NC} ./run <command> [options]"
+    echo ""
+    echo -e "${GREEN}Commands:${NC}"
+    echo "  test                  Run all tests with coverage information"
+    echo "  lint                  Run code linting"
+    echo "  update-external-docs  Update external documentation files"
+    echo "  build                 Build the project"
+    echo "  build-mcp-call        Build the mcp-call binary"
+    echo "  fetch_url <url>       Fetch a URL using MCP"
+    echo "  dev                   Run the application in development mode"
+    echo "  test-direct-call-single   Run integration test for --call flag (no child mcps)"
+    echo "  test-direct-call-with-mcps Run integration test for --call flag (with child mcps)"
+    echo "  test-emulation-single      Run emulation test with a single-step request"
+    echo "  test-emulation-with-mcps  Run emulation test with a multi-step request"
+    echo "  test-emulator         Test the emulator"
+    echo "  inspect               Inspect project with MCP Inspector"
+    echo "  no-fixme              Scan for TODOs, FIXMEs, and Println in the code"
+    echo "  check                 Run all checks in project (format, build, lint, test, integration, no-fixme)"
+    echo "  site                  Run the static site on localhost:8000"
+    echo "  help                  Display this help message"
+    echo ""
+    echo -e "${YELLOW}Examples:${NC}"
+    echo "  ./run dev             Start development server"
+    echo "  ./run test            Run all tests with coverage"
+    echo "  ./run fetch_url https://example.com"
+    echo "  ./run check           Run all project checks"
+    echo "  ./run site            Run static site on http://127.0.0.1:8000"
+}
+
+# Display help if no arguments provided
+if [ $# -eq 0 ]; then
+    help
+    exit 0
+fi
+
+CMD=$1
+shift
+
+case $CMD in
+    test)
+        # Create .coverage directory if it doesn't exist
+        mkdir -p .coverage
+
+        echo -e "${BLUE}Running all tests with coverage...${NC}"
+        echo -e "${YELLOW}-------------------------------------${NC}"
+
+        # Run tests with coverage for all packages
+        go test ./... -coverprofile=coverage.out -timeout=10s
+
+        echo -e "${YELLOW}-------------------------------------${NC}"
+
+        # Generate HTML report
+        go tool cover -html=coverage.out -o .coverage/coverage.html
+
+        # Show package coverage summary
+        echo -e "${GREEN}Coverage by package:${NC}"
+        echo -e "${YELLOW}-------------------------------------${NC}"
+        go tool cover -func=coverage.out | grep -v "total:" | sort
+
+        # Show total coverage
+        echo -e "${YELLOW}-------------------------------------${NC}"
+        echo -e "${GREEN}Total coverage:${NC}"
+        go tool cover -func=coverage.out | grep "total:"
+        echo -e "${YELLOW}-------------------------------------${NC}"
+        echo -e "${GREEN}HTML coverage report generated in .coverage/coverage.html${NC}"
+
+        # Clean up the coverage file
+        rm coverage.out
+        ;;
+    lint)
+        echo -e "${BLUE}Running linter...${NC}"
+        check_command "golangci-lint"
+        golangci-lint run ./... --verbose
+        ;;
+    update-external-docs)
+        echo -e "${BLUE}Updating external docs...${NC}"
+        repomix --remote https://github.com/mark3labs/mcp-go --compress --output documents/mcp-go.xml
+        repomix --remote https://github.com/modelcontextprotocol/modelcontextprotocol --compress --output documents/mcp-proto.xml
+        echo -e "${GREEN}External docs updated!${NC}"
+        ;;
+    build)
+        echo -e "${BLUE}Building project...${NC}"
+        mkdir -p bin
+        go build -o bin/speelka-agent ./cmd/server/main.go
+        echo -e "${GREEN}Build complete: bin/speelka-agent${NC}"
+        ;;
+    build-mcp-call)
+        echo -e "${BLUE}Building mcp-call...${NC}"
+        mkdir -p bin
+        go build -o bin/mcp-call ./cmd/mcp-call/main.go
+        echo -e "${GREEN}Build complete: bin/mcp-call${NC}"
+        ;;
+    fetch_url)
+        if [ -z "$1" ]; then
+            echo -e "${RED}Error: URL parameter is required.${NC}"
+            echo "Usage: ./run fetch_url <url>"
+            exit 1
+        fi
+        url="$1"
+        echo -e "${BLUE}Fetching URL: ${url}${NC}"
+        check_command "mcp"
+        check_command "npx"
+        mcp call fetch_url --params "{\"url\": \"${url}\"}" npx -y fetcher-mcp
+        ;;
+    dev)
+        load_env
+        go run -race ./cmd/server/main.go "$@"
+        ;;
+    test-direct-call-single)
+        echo -e "${BLUE}Running integration test for --call flag without child MCP servers...${NC}"
+        load_env
+        go build -o bin/speelka-agent ./cmd/server/main.go
+        ./bin/speelka-agent --config "site/examples/minimal.yaml" --call "What is 2+2?"
+        # Check exit code is 0 (success)
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}FAIL: Expected exit code 0, got $?${NC}"
+            exit 1
+        fi
+        ;;
+    test-direct-call-with-mcps)
+        echo -e "${BLUE}Running integration test for --call flag with child MCP servers...${NC}"
+        load_env
+        go build -o bin/speelka-agent ./cmd/server/main.go
+        ./bin/speelka-agent --config "site/examples/minimal.yaml" --call "What time has passed since the last commit in the project https://github.com/korchasa/speelka-agent?"
+        # Check exit code is 0 (success)
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}FAIL: Expected exit code 0, got $?${NC}"
+            exit 1
+        fi
+        ;;
+    test-emulation-single)
+        echo -e "${BLUE}Test agent without child MCP servers{NC}"
+        (
+            load_env
+            go build -o bin/mcp-call ./cmd/mcp-call/main.go
+            check_command "mcp"
+            ./bin/mcp-call \
+              --tool process \
+              --params '{"input": "What time is it now?"}' \
+              --set-log-level debug \
+              go run -race ./cmd/server/main.go --config ./site/examples/minimal.yaml
+        )
+        ;;
+    test-emulation-with-mcps)
+        echo -e "${BLUE}Test agent with child MCP servers{NC}"
+        (
+            load_env
+            go build -o bin/mcp-call ./cmd/mcp-call/main.go
+            check_command "mcp"
+            SPL_AGENT_LLM_TEMPERATURE=0.2 SPL_AGENT_CHAT_MAX_TOKENS=16000 ./bin/mcp-call \
+              --tool process \
+              --call-timeout 30 \
+              --params '{"input": "What time has passed since the last commit in the project https://github.com/korchasa/speelka-agent?"}' \
+              go run -race ./cmd/server/main.go --config ./site/examples/minimal.yaml
+        )
+        ;;
+    test-emulator-stdio)
+        echo -e "${BLUE}Test emulator{NC}"
+        (
+            load_env
+            go build -race -o bin/mcp-call ./cmd/mcp-call/main.go
+            check_command "npx"
+            ./bin/mcp-call \
+              --tool longRunningOperation \
+              --params '{"duration": 5}' \
+              --set-log-level debug \
+              npx @modelcontextprotocol/server-everything stdio
+        )
+        ;;
+    inspect)
+        echo -e "${BLUE}Inspecting project...${NC}"
+        (
+            load_env
+            check_command "npx"
+
+            # Collect all SPL_ environment variables
+            env_vars=()
+            while IFS='=' read -r key value; do
+                if [[ $key == SPL_* ]]; then
+                    # Replace newlines with a special character sequence that can be passed on command line
+                    escaped_value=$(echo "$value" | tr '\n' '\n')
+                    env_vars+=("-e")
+                    env_vars+=("$key=$escaped_value")
+                fi
+            done < <(env | grep "^SPL_")
+
+            # Run inspector with all SPL_ environment variables
+            npx @modelcontextprotocol/inspector "${env_vars[@]}" -- go run -race ./cmd/server/main.go --config "site/examples/minimal.yaml"
+        )
+        ;;
+    no-fixme)
+        if grep -rE 'TODO|FIXME|Println\(' internal/; then
+            echo -e "${RED}Error: TODO/FIXME/Println found!${NC}"
+            exit 1
+        fi
+        # Check for Russian text in all non-ignored files, but exclude this script itself
+        git ls-files | grep -v '^run$' > .files_to_check.txt
+        if cat .files_to_check.txt | xargs grep -n -E '[А-Яа-яЁё]' ; then
+            echo -e "${RED}Error: Russian text found!${NC}"
+            rm .files_to_check.txt
+            exit 1
+        fi
+        rm .files_to_check.txt
+        ;;
+    check)
+        echo -e "${BLUE}Running all project checks...${NC}"
+
+        echo -e "\n${YELLOW}1. Format code${NC}"
+        go fmt ./internal/... || { echo -e "${RED}Format failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}2. Building project${NC}"
+        ./run build || { echo -e "${RED}Build failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}3. Running linter${NC}"
+        ./run lint || { echo -e "${RED}Lint failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}4. Running tests${NC}"
+        ./run test || { echo -e "${RED}Tests failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}5. Running integration test by direct call (single step)${NC}"
+        ./run test-direct-call-single || { echo -e "${RED}Direct call failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}6. Running integration test by direct call (with child mcps)${NC}"
+        ./run test-direct-call-with-mcps || { echo -e "${RED}Direct call failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}7. Running integration test by emulation (single step)${NC}"
+        ./run test-emulation-single || { echo -e "${RED}Call failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}8. Running integration test by emulation (with child mcps)${NC}"
+        ./run test-emulation-with-mcps || { echo -e "${RED}Multi-step call failed${NC}"; exit 1; }
+
+        echo -e "\n${YELLOW}9. Running no-fixme check${NC}"
+        ./run no-fixme || { echo -e "${RED}No-fixme failed${NC}"; exit 1; }
+
+        echo -e "\n${GREEN}✓ All checks passed!${NC}"
+        ;;
+    site)
+        echo -e "${BLUE}Running site...${NC}"
+        check_command "python3"
+        cd site
+        python3 -m http.server -b 127.0.0.1 8000
+        ;;
+    help)
+        help
+        ;;
+    *)
+        echo -e "${RED}Unknown command: $CMD${NC}"
+        echo ""
+        help
+        exit 1
+        ;;
+esac

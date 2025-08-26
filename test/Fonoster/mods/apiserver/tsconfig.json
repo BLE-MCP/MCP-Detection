@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "references": [
+    {
+      "path": "../identity",
+    },
+    {
+      "path": "../authz",
+    },
+    {
+      "path": "../logger",
+    },
+    {
+      "path": "../common",
+    },
+    {
+      "path": "../types",
+    },
+    {
+      "path": "../autopilot",
+    }
+  ],
+  "exclude": ["node_modules", "dist", "test"]
+}

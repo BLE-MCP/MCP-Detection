@@ -1,0 +1,76 @@
+{
+  "name": "@fonoster/ctl",
+  "version": "0.14.0",
+  "description": "Fonoster Control Tool",
+  "author": "Pedro Sanders <psanders@fonoster.com>",
+  "homepage": "https://github.com/fonoster/fonoster#readme",
+  "license": "MIT",
+  "main": "dist/index",
+  "types": "dist/index",
+  "directories": {
+    "src": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "prebuild": "rimraf ./dist tsconfig.tsbuildinfo",
+    "build": "tsc -b tsconfig.json",
+    "clean": "rimraf ./dist node_modules tsconfig.tsbuildinfo",
+    "generate:readme": "oclif readme"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fonoster/fonoster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fonoster/fonoster/issues"
+  },
+  "gitHead": "3af6123a7fe16652f8cb3e30574b4a9e3700bff6",
+  "bin": {
+    "fonoster": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "fonoster",
+    "commands": "./dist/commands",
+    "dirname": "fonoster",
+    "topicSeparator": ":",
+    "helpClass": "./dist/Help",
+    "plugins": [
+      "@oclif/plugin-warn-if-update-available"
+    ],
+    "warn-if-update-available": {
+      "timeoutInDays": 7,
+      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>.",
+      "frequency": 1,
+      "frequencyUnit": "days"
+    }
+  },
+  "dependencies": {
+    "@fonoster/sdk": "^0.14.0",
+    "@inquirer/prompts": "^7.1.0",
+    "@oclif/core": "^4.0.34",
+    "@oclif/plugin-warn-if-update-available": "^3.1.28",
+    "ansis": "^4.0.0",
+    "cli-table3": "^0.6.5",
+    "cliui": "^8.0.1",
+    "figlet": "^1.8.0",
+    "js-yaml": "^4.1.0",
+    "moment": "^2.30.1",
+    "oclif": "^4.17.46",
+    "phone": "^3.1.55",
+    "terminal-link": "^3.0.0",
+    "twilio": "^5.4.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@oclif/test": "^4.1.3",
+    "@types/figlet": "^1.7.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "22.10.1"
+  }
+}

@@ -1,0 +1,29 @@
+# Smithery.ai configuration
+version: 1
+build:
+  dockerfile: Dockerfile
+  context: .
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: "object"
+    properties:
+      logLevel:
+        type: "string"
+        enum: ["error", "warn", "info", "debug"]
+        default: "info"
+        description: "Logging level"
+    additionalProperties: false
+  commandFunction: |
+    (config) => ({
+      "command": "node",
+      "args": [
+        "build/src/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "LOG_LEVEL": config.logLevel || "info",
+        "HEALTH_CHECK_PORT": "8080"
+      }
+    })

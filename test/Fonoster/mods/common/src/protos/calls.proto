@@ -1,0 +1,160 @@
+/*
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
+ *
+ * This file is part of Fonoster
+ *
+ * Licensed under the MIT License (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    https://opensource.org/licenses/MIT
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+package fonoster.calls.v1beta2;
+
+import "google/protobuf/struct.proto";
+
+// Calls service definition
+service Calls {
+  // Call a number and returns the call status
+  rpc CreateCall (CreateCallRequest) returns (CreateCallResponse) {}
+  // Get a list of Call Detail Records
+  rpc ListCalls (ListCallsRequest) returns (ListCallsResponse) {}
+  // Get a Call Detail Record
+  rpc GetCall (GetCallRequest) returns (CallDetailRecord) {}
+  // Stream call status
+  rpc TrackCall (TrackCallRequest) returns (stream TrackCallResponse) {}
+}
+
+enum CallType {
+  SIP_ORIGINATED = 0;
+  API_ORIGINATED = 1;
+}
+
+enum CallStatus {
+  UNKNOWN = 0;
+  NORMAL_CLEARING = 1;
+  CALL_REJECTED = 2;
+  UNALLOCATED = 3;
+  NO_USER_RESPONSE = 4;
+  NO_ROUTE_DESTINATION = 5;
+  NO_ANSWER = 6;
+  USER_BUSY = 7;
+  NOT_ACCEPTABLE_HERE = 8;
+  SERVICE_UNAVAILABLE = 9;
+  INVALID_NUMBER_FORMAT = 10;
+}
+
+enum CallDirection {
+  FROM_PSTN = 0;
+  TO_PSTN = 1;
+  INTRA_NETWORK = 2;
+}
+
+// Message for a Call Detail Record
+message CallDetailRecord {
+  // The unique identifier of the Call
+  string ref = 1;
+  // Call identifier from the SIP stack
+  string call_id = 2;
+  // The call type
+  CallType type = 3;
+  // The call status
+  CallStatus status = 4;
+  // Start time of the call
+  int32 started_at = 5;
+  // End time of the call
+  int32 ended_at = 6;
+  // The from number (E.164 format or SIP URI)
+  string from = 7;
+  // The to number (E.164 format or SIP URI)
+  string to = 8;
+  // The call duration in seconds
+  int32 duration = 9;
+  // The call direction
+  CallDirection direction = 10;
+}
+
+// The request message for Calls.Call
+message CreateCallRequest {
+  // The from number (E.164 format or SIP URI)
+  string from = 1;
+  // The to number (E.164 format or SIP URI)
+  string to = 2;
+  // Optional application reference
+  string app_ref = 3;
+  // Optional timeout in seconds
+  int32 timeout = 4;
+  // Optional metadata to send to the application
+  google.protobuf.Struct metadata = 5;
+}
+
+// The response message for Calls.Call
+message CreateCallResponse {
+  // The reference of the call
+  string ref = 1;
+}
+
+// The request message for Calls.ListCalls
+message ListCallsRequest {
+  // Optional start date in RFC3339 format
+  string after = 1;
+  // Optional end date in RFC3339 format
+  string before = 2;
+  // Optional call type
+  CallType type = 3;
+  // Optional call status
+  CallStatus status = 4;
+  // Optional from number (E.164 format or SIP URI)
+  string from = 5;
+  // Optional to number (E.164 format or SIP URI)
+  string to = 6;
+  // The page size
+  int32 page_size = 7;
+  // The page token
+  string page_token = 8;
+}
+
+// The response message for Calls.ListCalls
+message ListCallsResponse {
+  // The list of Call Detail Records
+  repeated CallDetailRecord items = 1;
+  // The token to retrieve the next page of results
+  string next_page_token = 2;
+}
+
+// The request message for Calls.GetCall
+message GetCallRequest {
+  // The unique identifier of the Call
+  string ref = 1;
+}
+
+// The request message for Calls.TrackCall
+message TrackCallRequest {
+  // The unique identifier of the Call
+  string ref = 1;
+}
+
+// The response message for Calls.TrackCall
+message TrackCallResponse {
+  // The status of the dial
+  enum Status {
+    TRYING = 0;
+    CANCEL = 1;
+    ANSWER = 2;
+    BUSY = 3;
+    PROGRESS = 4;
+    NOANSWER = 5;
+    // Maps from Asterisk's CHANUNAVAIL and CONGESTION
+    FAILED = 6;
+  }
+  Status status = 1;
+}

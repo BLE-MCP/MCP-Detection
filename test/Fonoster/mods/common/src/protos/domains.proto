@@ -1,0 +1,127 @@
+/*
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
+ *
+ * This file is part of Fonoster
+ *
+ * Licensed under the MIT License (the "License");
+ * you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    https://opensource.org/licenses/MIT
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+package fonoster.domains.v1beta2;
+
+// The Domains service definition
+service Domains {
+  // Create a new Domain
+  rpc CreateDomain (CreateDomainRequest) returns (CreateDomainResponse) {}
+  // Update an existing Domain
+  rpc UpdateDomain (UpdateDomainRequest) returns (UpdateDomainResponse) {}
+  // Get an existing Domain
+  rpc GetDomain (GetDomainRequest) returns (Domain) {}
+  // List all Domains
+  rpc ListDomains (ListDomainsRequest) returns (ListDomainsResponse) {}
+  // Delete an existing Domain
+  rpc DeleteDomain (DeleteDomainRequest) returns (DeleteDomainResponse) {}
+}
+
+// The message for the Domain resource
+message Domain {
+  // The unique identifier of the Domain
+  string ref = 1;
+  // The name of the Domain
+  string name = 2;
+  // The URI of the Domain
+  string domain_uri = 3;
+  // The date of creation of the Domain
+  int32 created_at = 4;
+  // The date of the last update
+  int32 updated_at = 5;
+}
+
+// EgressPolicy defines the policy for egress traffic
+message EgressPolicy {
+  // The pattern to match
+  string rule = 1;
+  // Reference to the number to use for egress
+  string number_ref = 2;
+}
+
+// The request message for Domains.CreateDomain
+message CreateDomainRequest {
+  // The name of the Domain
+  string name = 1;
+  // The domain_uri of the Domain
+  string domain_uri = 2;
+  // Reference to the Access Control List
+  string access_control_list_ref = 3;
+  // Optional list of egress policies
+  repeated EgressPolicy egress_policies = 4;
+}
+
+// The response message for Domains.CreateDomain
+message CreateDomainResponse {
+  // The id of the new Domain
+  string ref = 1;
+}
+
+// The request message for Domains.UpdateDomain
+message UpdateDomainRequest {
+  // The id of the Domain
+  string ref = 1;
+  // The name of the Domain
+  string name = 2;
+  // Reference to the Access Control List
+  string access_control_list_ref = 3;
+  // Optional list of egress policies
+  repeated EgressPolicy egress_policies = 4;
+}
+
+// The response message for Domains.UpdateDomain
+message UpdateDomainResponse {
+  // The id of the updated Domain
+  string ref = 1;
+}
+
+// The request message for Domains.GetDomain
+message GetDomainRequest {
+  // // The unique identifier of the Domain
+  string ref = 1;
+}
+
+// The request message for Domains.DeleteDomain
+message DeleteDomainRequest {
+  // The unique identifier of the Domain
+  string ref = 1;
+}
+
+// The response message for Domains.DeleteDomain
+message DeleteDomainResponse {
+  // Echo back the id of the deleted Domain
+  string ref = 1;
+}
+
+// The request message for Domains.ListDomains
+message ListDomainsRequest {
+  // The maximum number of items in the list
+  int32 page_size = 1;
+  // The next_page_token value returned from the previous request, if any
+  string page_token = 2;
+}
+
+// The response message for Domains.ListDomains
+message ListDomainsResponse {
+  // List of Domains
+  repeated Domain items = 1;
+  // Token to retrieve the next page of results, or empty if there are no more results in the list
+  string next_page_token = 2;
+}

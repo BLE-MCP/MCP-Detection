@@ -1,0 +1,89 @@
+---
+# All-Options Agent Example
+# This YAML demonstrates every available configuration option for a
+# Speelka agent. Use as a template for advanced configuration and
+# documentation.
+
+runtime:
+  log:
+    defaultLevel: info                # Log level: debug, info, warn, error
+    output: ':stderr:'             # Log output: file path or :stderr:/:stdout:/:mcp:
+  transports:
+    stdio:
+      enabled: true            # Enable stdio transport (CLI/daemon)
+      buffer_size: 8192        # Buffer size for stdio (bytes)
+    http:
+      enabled: false           # Enable HTTP server
+      host: localhost          # HTTP server host
+      port: 3000               # HTTP server port
+
+agent:
+  name: "all-options-agent"    # Agent name (required)
+  version: "1.0.0"             # Agent version (optional)
+
+  # Tool configuration
+  tool:
+    name: "process"            # Tool name (required)
+    description: |
+      Process tool for handling user queries with LLM  # Tool description
+    argumentName: "input"     # Argument name for the tool
+    argumentDescription: |
+      The user query to process  # Argument description
+
+  # Chat configuration
+  chat:
+    maxTokens: 0              # Max tokens in chat history (0 = unlimited)
+    maxLLMIterations: 25     # Max LLM calls per request (0 = unlimited)
+    requestBudget: 1.0        # Max cost per request (USD or token-equivalent, 0 = unlimited)
+
+  # LLM configuration
+  llm:
+    provider: "openai"         # LLM provider (e.g., openai, anthropic)
+    apiKey: ""                # API key (set via env for security)
+    model: "gpt-4.1-mini"      # LLM model name
+    maxTokens: 0              # Max tokens per LLM response (0 = provider default)
+    temperature: 0.7           # LLM temperature (creativity)
+    promptTemplate: |
+      You are a helpful AI assistant. Respond to the following request:
+      {{input}}.
+      Provide a detailed and helpful response. Available tools: {{tools}}
+    retry:
+      maxRetries: 3           # Max LLM retries on failure
+      initialBackoff: 1.0     # Initial backoff (seconds)
+      maxBackoff: 30.0        # Max backoff (seconds)
+      backoffMultiplier: 2.0  # Backoff multiplier
+
+  # MCP Server connections
+  connections:
+    mcpServers:
+      time:
+        command: "docker"      # Command to launch MCP server
+        args:
+          - "run"
+          - "-i"
+          - "--rm"
+          - "mcp/time"
+        environment: []         # Environment variables for the command
+        url: ""                 # HTTP URL for MCP server (if not using command)
+        apiKey: ""             # API key for HTTP MCP server
+        excludeTools:           # List of tool names to include (optional)
+          - convert_time
+      filesystem:
+        command: "mcp-filesystem-server"
+        args:
+          - "./"
+        environment:
+          - "EXAMPLE_ENV=value"
+        url: ""
+        apiKey: ""
+        includeTools:
+          - get_file_info
+          - list_allowed_directories
+          - list_directory
+          - read_file
+          - search_files
+    retry:
+      maxRetries: 3           # Max retries for MCP connections
+      initialBackoff: 1.0     # Initial backoff (seconds)
+      maxBackoff: 30.0        # Max backoff (seconds)
+      backoffMultiplier: 2.0  # Backoff multiplier
