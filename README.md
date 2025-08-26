@@ -1,8 +1,10 @@
+# Readme
+
 # MICRYSCOPE Artifacts
 
 This repository contains artifacts for the paper 'MICRYSCOPE'. These artifacts are currently provided anonymously, exclusively for peer review purposes. The authors, who remain anonymous due to submission guidelines, will publicly release these artifacts with their identities following the completion of the review process.
 
-⚠️ Prerequisites
+## ⚠️ Prerequisites
 
 Before running this tool, you **must install the runtime environments** for each supported language, otherwise the AST analyzers cannot execute:
 
@@ -34,7 +36,10 @@ mcp_crypto_misuse_detection/
 ├── rust_ast_analyzer/         # Rust AST analyzer (cargo)
 ├── swift_ast_analyzer/        # Swift AST analyzer (swift build)
 ├── crypto_identification/     # Initial crypto detection
-└── crypto_misuse_detection.py # Misuse detection engine
+├── test/                      # test cases
+├── crypto_misuse_detection.py # Misuse detection engine
+└── README.md
+
 ```
 
 ---
@@ -46,71 +51,72 @@ mcp_crypto_misuse_detection/
 Run each analyzer inside its directory. Example:
 
 - **JavaScript**
-  
-  ```bash
-  cd js_ast_analyzer
-  node js_ast_analyzer.js "../mcp_source_code/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd js_ast_analyzer
+    node js_ast_analyzer.js "../test/mcpmarket/JavaScript" "../mcp_detection_results/Javascript/mcpmarket"
+    ```
+    
 - **Python**
-  
-  ```bash
-  cd python_ast_analyzer
-  python python_ast_analyzer.py "../mcp_source_code/mcpmarket/Python" "../mcp_detection_results/Python/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd python_ast_analyzer
+    python python_ast_analyzer.py "../test/mcpmarket/Python" "../mcp_detection_results/Python/mcpmarket"
+    ```
+    
 - **Go**
-  
-  ```bash
-  cd go_ast_analyzer
-  go run go_ast_analyzer.go "../mcp_source_code/mcpmarket/Go" "../mcp_detection_results/Go/mcpmarket" 
-  ```
-
+    
+    ```bash
+    cd go_ast_analyzer
+    go run go_ast_analyzer.go "../test/mcpmarket/Go" "../mcp_detection_results/Go/mcpmarket"
+    ```
+    
 - **PHP**
-  
-  ```bash
-  cd php_ast_analyzer
-  php php_ast_analyzer.php "../mcp_source_code/mcpmarket/PHP" "../mcp_detection_results/PHP/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd php_ast_analyzer
+    php php_ast_analyzer.php "../test/mcpmarket/PHP" "../mcp_detection_results/PHP/mcpmarket"
+    ```
+    
 - **Rust**
-  
-  ```bash
-  cd rust_ast_analyzer
-  cargo run -- "../mcp_source_code/mcpmarket/Rust" "../mcp_detection_results/Rust/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd rust_ast_analyzer/src
+    cargo run -- "../../test/mcpmarket/Rust" "../mcp_detection_results/Rust/mcpmarket"
+    ```
+    
 - **Java**
-  
-  ```bash
-  cd java_ast_analyzer
-  mvn clean compile
-  mvn dependency:resolve
-  mvn exec:java -Dexec.mainClass=org.example.Main -Dexec.args="../mcp_source_code/mcpmarket/Java ../mcp_detection_results/Java/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd java_ast_analyzer
+    mvn clean compile
+    mvn dependency:resolve
+    mvn exec:java -Dexec.mainClass=org.example.Main -Dexec.args="../test/mcpmarket/Java ../mcp_detection_results/Java/mcpmarket"
+    ```
+    
 - **C#**
-  
-  ```bash
-  cd csharp_ast_analyzer
-  dotnet build
-  dotnet run -- "../mcp_source_code/mcpmarket/C#" "../mcp_detection_results/C#/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd csharp_ast_analyzer
+    dotnet build
+    dotnet run -- "../test/mcpmarket/C#" "../mcp_detection_results/C#/mcpmarket"
+    ```
+    
 - **Ruby**
-  
-  ```bash
-  cd ruby_ast_analyzer
-  ruby ruby_ir.rb "../mcp_source_code/mcpmarket/Ruby" "../mcp_detection_results/Ruby/mcpmarket"
-  ```
-
+    
+    ```bash
+    cd ruby_ast_analyzer
+    ruby ruby_ir.rb "../test/mcpmarket/Ruby" "../mcp_detection_results/Ruby/mcpmarket"
+    ```
+    
 - **Swift**
-  
-  ```bash
-  cd swift_ast_analyzer
-  swift build
-  .build/debug/swift_ast_analyzer.exe "../mcp_source_code/mcpmarket/Swift" "../mcp_detection_results/Swift/mcpmarket"
-  ```
+    
+    ```bash
+    cd swift_ast_analyzer
+    swift build
+    .build/debug/swift_ast_analyzer.exe "../test/mcpmarket/Swift" "../mcp_detection_results/Swift/mcpmarket"
+    ```
+    
 
 ---
 
@@ -151,7 +157,7 @@ python crypto_misuse_detection.py "./mcp_detection_results" --excel "./results/c
              |
              v
 +----------------------------+
-| crypto_identification.py   | 
+| crypto_identification.py   |
 +----------------------------+
              |
              v
